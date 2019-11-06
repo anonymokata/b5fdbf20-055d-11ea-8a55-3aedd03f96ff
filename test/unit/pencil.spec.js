@@ -16,6 +16,7 @@ describe('Pencil', () => {
             const pencil = new Pencil();
 
             // then
+            expect(pencil instanceof Pencil).to.equal(true);
             expect(pencil).to.deep.equal({
                 paper: ''
             });
