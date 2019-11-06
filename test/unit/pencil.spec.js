@@ -8,7 +8,7 @@ const MODULE_PATH = '../../src/pencil';
 
 describe('Pencil', () => {
     context('when constructor() called', () => {
-        it('should create pencil', () => {
+        it('should create pencil with default values', () => {
             // given
             const { Pencil } = proxyquire(MODULE_PATH, {});
 
@@ -16,7 +16,24 @@ describe('Pencil', () => {
             const pencil = new Pencil();
 
             // then
-            expect(pencil).to.deep.equal({});
+            expect(pencil).to.deep.equal({
+                paper: ''
+            });
+        });
+
+        it('should create pencil with given paper', () => {
+            // given
+            const givenPaper = chance.string();
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(givenPaper);
+
+            // then
+            expect(pencil).to.deep.equal({
+                paper: givenPaper
+            });
         });
     });
 
