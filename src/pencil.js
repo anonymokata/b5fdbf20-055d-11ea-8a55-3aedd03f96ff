@@ -4,7 +4,7 @@ class Pencil {
     }
 
     write(text) {
-        return this.paper + text;
+        return this.paper += text;
     }
 }
 
