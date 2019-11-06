@@ -22,6 +22,21 @@ describe('Pencil', () => {
             });
         });
 
+        it('should create pencil with blank paper', () => {
+            // given
+            const givenPaper = '';
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(givenPaper);
+
+            // then
+            expect(pencil).to.deep.equal({
+                paper: givenPaper
+            });
+        });
+
         it('should create pencil with given paper', () => {
             // given
             const givenPaper = chance.string();
@@ -41,64 +56,66 @@ describe('Pencil', () => {
     context('when write() called', () => {
         it('should write a word on blank paper', () => {
             // given
-            const givenText = chance.string();
+            const givenPaper = '';
+            const wordToWrite = chance.word();
 
             const { Pencil } = proxyquire(MODULE_PATH, {});
 
             // when
-            const pencil = new Pencil();
-            const result = pencil.write(givenText);
+            const pencil = new Pencil(givenPaper);
+            const result = pencil.write(wordToWrite);
 
             // then
-            expect(result).to.equal(givenText);
+            expect(result).to.equal(wordToWrite);
         });
 
         it('should write multiple words on blank paper', () => {
             // given
-            const firstWord = chance.word();
-            const secondWord = chance.word();
+            const givenPaper = '';
+            const firstWordToWrite = chance.word();
+            const secondWordToWrite = chance.word();
 
             const { Pencil } = proxyquire(MODULE_PATH, {});
 
             // when
-            const pencil = new Pencil();
-            pencil.write(firstWord);
-            const result = pencil.write(secondWord);
+            const pencil = new Pencil(givenPaper);
+            pencil.write(firstWordToWrite);
+            const result = pencil.write(secondWordToWrite);
 
             // then
-            expect(result).to.equal(`${firstWord}${secondWord}`);
+            expect(result).to.equal(`${firstWordToWrite}${secondWordToWrite}`);
         });
 
         it('should write a word on paper with existing text', () => {
             // given
             const givenPaper = chance.string();
-            const givenWord = chance.word();
+            const wordToWrite = chance.word();
 
             const { Pencil } = proxyquire(MODULE_PATH, {});
 
             // when
             const pencil = new Pencil(givenPaper);
-            const result = pencil.write(givenWord);
+            const result = pencil.write(wordToWrite);
 
             // then
-            expect(result).to.equal(`${givenPaper}${givenWord}`);
+            expect(result).to.equal(`${givenPaper}${wordToWrite}`);
         });
 
         it('should write multiple words on paper with existing text', () => {
             // given
             const givenPaper = chance.string();
-            const firstWord = chance.word();
-            const secondWord = chance.word();
+            const firstWordToWrite = chance.word();
+            const secondWordToWrite = chance.word();
 
             const { Pencil } = proxyquire(MODULE_PATH, {});
 
             // when
             const pencil = new Pencil(givenPaper);
-            pencil.write(firstWord);
-            const result = pencil.write(secondWord);
+            pencil.write(firstWordToWrite);
+            const result = pencil.write(secondWordToWrite);
 
             // then
-            expect(result).to.equal(`${givenPaper}${firstWord}${secondWord}`);
+            expect(result).to.equal(`${givenPaper}${firstWordToWrite}${secondWordToWrite}`);
         });
     });
 });
