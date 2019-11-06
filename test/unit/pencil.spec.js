@@ -63,10 +63,10 @@ describe('Pencil', () => {
 
             // when
             const pencil = new Pencil(givenPaper);
-            const result = pencil.write(wordToWrite);
+            const { paper } = pencil.write(wordToWrite);
 
             // then
-            expect(result).to.equal(wordToWrite);
+            expect(paper).to.equal(wordToWrite);
         });
 
         it('should write multiple words on blank paper', () => {
@@ -79,11 +79,10 @@ describe('Pencil', () => {
 
             // when
             const pencil = new Pencil(givenPaper);
-            pencil.write(firstWordToWrite);
-            const result = pencil.write(secondWordToWrite);
+            const { paper } = pencil.write(firstWordToWrite).write(secondWordToWrite);
 
             // then
-            expect(result).to.equal(`${firstWordToWrite}${secondWordToWrite}`);
+            expect(paper).to.equal(`${firstWordToWrite}${secondWordToWrite}`);
         });
 
         it('should write a word on paper with existing text', () => {
@@ -95,10 +94,10 @@ describe('Pencil', () => {
 
             // when
             const pencil = new Pencil(givenPaper);
-            const result = pencil.write(wordToWrite);
+            const { paper } = pencil.write(wordToWrite);
 
             // then
-            expect(result).to.equal(`${givenPaper}${wordToWrite}`);
+            expect(paper).to.equal(`${givenPaper}${wordToWrite}`);
         });
 
         it('should write multiple words on paper with existing text', () => {
@@ -111,11 +110,10 @@ describe('Pencil', () => {
 
             // when
             const pencil = new Pencil(givenPaper);
-            pencil.write(firstWordToWrite);
-            const result = pencil.write(secondWordToWrite);
+            const { paper } = pencil.write(firstWordToWrite).write(secondWordToWrite);
 
             // then
-            expect(result).to.equal(`${givenPaper}${firstWordToWrite}${secondWordToWrite}`);
+            expect(paper).to.equal(`${givenPaper}${firstWordToWrite}${secondWordToWrite}`);
         });
     });
 });
