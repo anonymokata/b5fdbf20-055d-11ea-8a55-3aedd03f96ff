@@ -138,5 +138,69 @@ describe('Pencil', () => {
             // then
             expect(paper).to.equal(`${givenPaper}${firstWordToWrite}${secondWordToWrite}`);
         });
+
+        it('should write a word and degrade', () => {
+            // given
+            const givenPointDegradation = chance.natural({ min: 10, max: 20 });
+            const wordToWrite = chance.word({ length: 5 });
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil('', givenPointDegradation);
+            const { pointDegradation } = pencil.write(wordToWrite);
+
+            // then
+            expect(pointDegradation).to.equal(givenPointDegradation - wordToWrite.length);
+        });
+
+        it('should not degrade when writing whitespace', () => {
+            // given
+            const givenPointDegradation = chance.natural();
+            const newlineToWrite = '\n';
+            const carriageReturnToWrite = '\r';
+            const tabToWrite = '\t';
+            const spaceToWrite = ' ';
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil('', givenPointDegradation);
+            const { pointDegradation } = pencil.write(newlineToWrite).write(carriageReturnToWrite).write(tabToWrite).write(spaceToWrite);
+
+            // then
+            expect(pointDegradation).to.equal(givenPointDegradation);
+        });
+
+        it('should not degrade below 0', () => {
+            // given
+            const givenPointDegradation = 1;
+            const wordToWrite = 'test';
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil('', givenPointDegradation);
+            const { pointDegradation } = pencil.write(wordToWrite);
+
+            // then
+            expect(pointDegradation).to.equal(0);
+        });
+
+        it('should go dull and write whitespace instead', () => {
+            // given
+            const givenPointDegradation = 1;
+            const wordToWrite = 'test';
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil('', givenPointDegradation);
+            const { paper, pointDegradation } = pencil.write(wordToWrite);
+
+            // then
+            expect(pointDegradation).to.equal(0);
+            expect(paper).to.equal('t   ');
+        });
     });
 });

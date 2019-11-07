@@ -4,8 +4,25 @@ class Pencil {
         this.pointDegradation = pointDegradation;
     }
 
+    _canWrite() {
+        return this.pointDegradation > 0;
+    }
+
+    _degradePoint(character) {
+        /[\s]/.test(character) ? this.pointDegradation -= 0 : this.pointDegradation > 0 ? this.pointDegradation-- : 0;
+    }
+
+    _writeCharacter(character) {
+        const characterToWrite = this._canWrite() ? character : ' ';
+
+        this.paper += characterToWrite;
+        this._degradePoint(characterToWrite);
+    }
+
     write(text) {
-        this.paper += text;
+        for (const character of text) {
+            this._writeCharacter(character);
+        }
 
         return this;
     }
