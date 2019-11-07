@@ -18,7 +18,8 @@ describe('Pencil', () => {
             // then
             expect(pencil instanceof Pencil).to.equal(true);
             expect(pencil).to.deep.equal({
-                paper: ''
+                paper: '',
+                pointDegradation: Infinity
             });
         });
 
@@ -29,12 +30,10 @@ describe('Pencil', () => {
             const { Pencil } = proxyquire(MODULE_PATH, {});
 
             // when
-            const pencil = new Pencil(givenPaper);
+            const { paper } = new Pencil(givenPaper);
 
             // then
-            expect(pencil).to.deep.equal({
-                paper: givenPaper
-            });
+            expect(paper).to.equal(givenPaper);
         });
 
         it('should create pencil with given paper', () => {
@@ -44,12 +43,36 @@ describe('Pencil', () => {
             const { Pencil } = proxyquire(MODULE_PATH, {});
 
             // when
-            const pencil = new Pencil(givenPaper);
+            const { paper } = new Pencil(givenPaper);
 
             // then
-            expect(pencil).to.deep.equal({
-                paper: givenPaper
-            });
+            expect(paper).to.equal(givenPaper);
+        });
+
+        it('should create pencil with no point degradation', () => {
+            // given
+            const givenPointDegradation = undefined;
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const { pointDegradation } = new Pencil(undefined, givenPointDegradation);
+
+            // then
+            expect(pointDegradation).to.equal(Infinity);
+        });
+
+        it('should create pencil with given point degradation', () => {
+            // given
+            const givenPointDegradation = chance.natural();
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const { pointDegradation } = new Pencil(undefined, givenPointDegradation);
+
+            // then
+            expect(pointDegradation).to.equal(givenPointDegradation);
         });
     });
 

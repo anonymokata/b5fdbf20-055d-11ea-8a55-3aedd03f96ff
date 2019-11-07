@@ -1,6 +1,7 @@
 class Pencil {
-    constructor(paper = '') {
+    constructor(paper = '', pointDegradation = Infinity) {
         this.paper = paper;
+        this.pointDegradation = pointDegradation;
     }
 
     write(text) {
