@@ -26,6 +26,17 @@ describe('Pencil', () => {
             });
         });
 
+        it('should create pencil with default paper', () => {
+            // given
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const { paper } = new Pencil(undefined);
+
+            // then
+            expect(paper).to.equal('');
+        });
+
         it('should create pencil with blank paper', () => {
             // given
             const givenPaper = '';
@@ -41,7 +52,7 @@ describe('Pencil', () => {
 
         it('should create pencil with given paper', () => {
             // given
-            const givenPaper = chance.string();
+            const givenPaper = chance.paragraph();
 
             const { Pencil } = proxyquire(MODULE_PATH, {});
 
@@ -52,9 +63,21 @@ describe('Pencil', () => {
             expect(paper).to.equal(givenPaper);
         });
 
+        it('should create pencil with default point durability', () => {
+            // given
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const { pointDurability } = new Pencil(undefined, undefined);
+
+            // then
+            expect(pointDurability).to.equal(Infinity);
+        });
+
         it('should create pencil with no point durability', () => {
             // given
-            const givenPointDurability = undefined;
+            const givenPointDurability = 0;
 
             const { Pencil } = proxyquire(MODULE_PATH, {});
 
@@ -62,7 +85,7 @@ describe('Pencil', () => {
             const { pointDurability } = new Pencil(undefined, givenPointDurability);
 
             // then
-            expect(pointDurability).to.equal(Infinity);
+            expect(pointDurability).to.equal(givenPointDurability);
         });
 
         it('should create pencil with given point durability', () => {
@@ -76,6 +99,80 @@ describe('Pencil', () => {
 
             // then
             expect(pointDurability).to.equal(givenPointDurability);
+        });
+
+        it('should create pencil with no length', () => {
+            // given
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const { length } = new Pencil(undefined, undefined, undefined);
+
+            // then
+            expect(length).to.equal(Infinity);
+        });
+
+        it('should create pencil with no length', () => {
+            // given
+            const givenPencilLength = 0;
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const { length } = new Pencil(undefined, undefined, givenPencilLength);
+
+            // then
+            expect(length).to.equal(givenPencilLength);
+        });
+
+        it('should create pencil with given length', () => {
+            // given
+            const givenPencilLength = chance.natural();
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const { length } = new Pencil(undefined, undefined, givenPencilLength);
+
+            // then
+            expect(length).to.equal(givenPencilLength);
+        });
+
+        it('should create pencil with no eraser durability', () => {
+            // given
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const { eraserDurability } = new Pencil(undefined, undefined, undefined, undefined);
+
+            // then
+            expect(eraserDurability).to.equal(Infinity);
+        });
+
+        it('should create pencil with no eraser durability', () => {
+            // given
+            const givenPencilDurability = 0;
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const { eraserDurability } = new Pencil(undefined, undefined, undefined, givenPencilDurability);
+
+            // then
+            expect(eraserDurability).to.equal(givenPencilDurability);
+        });
+
+        it('shoud create pencil with given eraser durability', () => {
+            // given
+            const givenPencilDurability = chance.natural();
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const { eraserDurability } = new Pencil(undefined, undefined, undefined, givenPencilDurability);
+
+            // then
+            expect(eraserDurability).to.equal(givenPencilDurability);
         });
     });
 
