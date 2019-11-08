@@ -21,7 +21,8 @@ describe('Pencil', () => {
                 paper: '',
                 pointDurability: Infinity,
                 maxPointDurability: Infinity,
-                length: Infinity
+                length: Infinity,
+                eraserDurability: Infinity
             });
         });
 

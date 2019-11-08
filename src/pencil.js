@@ -6,11 +6,12 @@ const CAPITAL_CHARACTER_COST = CHARATER_COST * 2;
 const SHARPEN_COST = 1;
 
 class Pencil {
-    constructor(paper = '', pointDurability = Infinity, length = Infinity) {
+    constructor(paper = '', pointDurability = Infinity, length = Infinity, eraserDurability = Infinity) {
         this.paper = paper;
         this.pointDurability = pointDurability;
         this.maxPointDurability = pointDurability;
         this.length = length;
+        this.eraserDurability = eraserDurability;
     }
 
     _canWrite() {
