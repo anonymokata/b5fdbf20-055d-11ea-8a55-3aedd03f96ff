@@ -293,5 +293,54 @@ describe('Pencil', () => {
             // then
             expect(length).to.equal(givenLength - 3);
         });
+
+        it('should stop sharpening when no more length', () => {
+            // given
+            const givenLength = 1;
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(undefined, undefined, givenLength);
+            const { length } = pencil.sharpen().sharpen();
+
+            // then
+            expect(length).to.equal(0);
+        });
+
+        it('should continue writing after sharpening', () => {
+            // given
+            const givenLength = chance.natural();
+            const wordToWrite = chance.word();
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(undefined, undefined, givenLength);
+            const { paper, length } = pencil.sharpen().write(wordToWrite);
+
+            // then
+            expect(paper).to.equal(wordToWrite);
+            expect(length).to.equal(givenLength - 1);
+        });
+
+        it('should stop writing after sharpening to a nub', () => {
+            // given
+            const givenPointDurability = 5;
+            const givenLength = 1;
+            const firstWordToWrite = 'first';
+            const secondWordToWrite = 'second';
+            const thirdWordToWrite = 'third';
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(undefined, givenPointDurability, givenLength);
+            const { paper, length } = pencil.write(firstWordToWrite).sharpen().write(secondWordToWrite).sharpen().write(thirdWordToWrite);
+
+            // then
+            expect(paper).to.equal('firstsecon      ');
+            expect(length).to.equal(0);
+        });
     });
 });

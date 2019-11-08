@@ -50,8 +50,10 @@ class Pencil {
     }
 
     sharpen() {
-        this.length -= SHARPEN_COST;
-        this.pointDurability = this.maxPointDurability;
+        if (this.length >= SHARPEN_COST) {
+            this.length -= SHARPEN_COST;
+            this.pointDurability = this.maxPointDurability;
+        }
 
         return this;
     }
