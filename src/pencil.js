@@ -5,6 +5,8 @@ const CAPITAL_CHARACTER_COST = CHARATER_COST * 2;
 
 const SHARPEN_COST = 1;
 
+const ERASE_COST = 1;
+
 class Pencil {
     constructor(paper = '', pointDurability = Infinity, length = Infinity, eraserDurability = Infinity) {
         this.paper = paper;
@@ -69,6 +71,18 @@ class Pencil {
         return this.paper.includes(text);
     }
 
+    _canErase() {
+        return this.eraserDurability > 0;
+    }
+
+    _degradeEraser(character) {
+        if (this._isWhitespace(character)) {
+            this.eraserDurability -= 0;
+        } else {
+            this.eraserDurability -= ERASE_COST;
+        }
+    }
+
     erase(text) {
         if (!this._paperHasText(text)) {
             return this;
@@ -78,7 +92,11 @@ class Pencil {
         const characters = this.paper.split('');
 
         for (let i = 0; i < text.length; i++) {
-            characters[textEndIndex - i] = SPACE;
+            if (this._canErase()) {
+                const characterToErase = characters[textEndIndex - i];
+                characters[textEndIndex - i] = SPACE;
+                this._degradeEraser(characterToErase);
+            }
         }
 
         this.paper = characters.join('');

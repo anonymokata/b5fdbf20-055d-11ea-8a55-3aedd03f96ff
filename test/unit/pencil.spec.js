@@ -432,6 +432,24 @@ describe('Pencil', () => {
             expect(paper).to.equal(`${prefix}${wordToErase}${chance.n(() => ' ', wordToErase.length).join('')}${chance.n(() => ' ', wordToErase.length).join('')}${suffix}`);
         });
 
+        it('should erase multiple words', () => {
+            // given
+            const prefix = chance.word();
+            const firstWordToErase = chance.word();
+            const secondWordToErase = chance.word();
+            const suffix = chance.word();
+            const wordsToWrite = `${prefix}${firstWordToErase}${secondWordToErase}${suffix}`;
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(undefined, undefined, undefined);
+            const { paper } = pencil.write(wordsToWrite).erase(`${firstWordToErase}${secondWordToErase}`);
+
+            // then
+            expect(paper).to.equal(`${prefix}${chance.n(() => ' ', firstWordToErase.length).join('')}${chance.n(() => ' ', secondWordToErase.length).join('')}${suffix}`);
+        });
+
         it('should stop erasing when no more instances exist', () => {
             // given
             const prefix = chance.word();
@@ -447,6 +465,89 @@ describe('Pencil', () => {
 
             // then
             expect(paper).to.equal(`${prefix}${chance.n(() => ' ', wordToErase.length).join('')}${chance.n(() => ' ', wordToErase.length).join('')}${suffix}`);
+        });
+
+        it('should degrade eraser when erasing', () => {
+            // given
+            const givenEraserDurability = chance.natural({ min: 20 });
+            const prefix = chance.word();
+            const wordToErase = chance.word();
+            const suffix = chance.word();
+            const wordsToWrite = `${prefix}${wordToErase}${suffix}`;
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(undefined, undefined, undefined, givenEraserDurability);
+            const { eraserDurability } = pencil.write(wordsToWrite).erase(wordToErase);
+
+            // then
+            expect(eraserDurability).to.equal(givenEraserDurability - wordToErase.length);
+        });
+
+        it('should wear out eraser if erasing more than there is durability', () => {
+            // given
+            const givenEraserDurability = 1;
+            const wordToErase = chance.word();
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(undefined, undefined, undefined, givenEraserDurability);
+            const { eraserDurability } = pencil.write(wordToErase).erase(wordToErase);
+
+            // then
+            expect(eraserDurability).to.equal(0);
+        });
+
+        it('should not degrade when erasing whitespace', () => {
+            // given
+            const givenEraserDurability = chance.natural();
+            const newlineToErase = '\n';
+            const carriageReturnToErase = '\r';
+            const tabToErase = '\t';
+            const spaceToErase = ' ';
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(undefined, undefined, undefined, givenEraserDurability);
+            const { paper, eraserDurability } = pencil.write(`${newlineToErase}${carriageReturnToErase}${tabToErase}${spaceToErase}`).erase(newlineToErase).erase(carriageReturnToErase).erase(tabToErase).erase(spaceToErase);
+
+            // then
+            expect(paper).to.equal('    ');
+            expect(eraserDurability).to.equal(givenEraserDurability);
+        });
+
+        it('should not degrade eraser below 0 when worn out', () => {
+            // given
+            const givenEraserDurability = 0;
+            const wordToErase = chance.word();
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(undefined, undefined, undefined, givenEraserDurability);
+            const { eraserDurability } = pencil.write(wordToErase).erase(wordToErase);
+
+            // then
+            expect(eraserDurability).to.equal(0);
+        });
+
+        it('should not erase when eraser worn out', () => {
+            // given
+            const givenEraserDurability = 0;
+            const wordToErase = chance.word();
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(undefined, undefined, undefined, givenEraserDurability);
+            const { paper, eraserDurability } = pencil.write(wordToErase).erase(wordToErase);
+
+            // then
+            expect(paper).to.equal(wordToErase);
+            expect(eraserDurability).to.equal(0);
         });
     });
 });
