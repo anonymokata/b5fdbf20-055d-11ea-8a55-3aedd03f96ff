@@ -1,3 +1,5 @@
+const SPACE = ' ';
+
 const CHARATER_COST = 1;
 const CAPITAL_CHARACTER_COST = CHARATER_COST * 2;
 
@@ -34,7 +36,7 @@ class Pencil {
     }
 
     _writeCharacter(character) {
-        const characterToWrite = this._canWrite() ? character : ' ';
+        const characterToWrite = this._canWrite() ? character : SPACE;
         const casedCharacterToWrite = this._canWriteCapital() ? characterToWrite : characterToWrite.toLowerCase();
 
         this.paper += casedCharacterToWrite;
@@ -54,6 +56,27 @@ class Pencil {
             this.length -= SHARPEN_COST;
             this.pointDurability = this.maxPointDurability;
         }
+
+        return this;
+    }
+
+    _hasText(text) {
+        return this.paper.includes(text);
+    }
+
+    erase(text) {
+        if (!this._hasText(text)) {
+            return this;
+        }
+
+        const textEndIndex = this.paper.lastIndexOf(text) + text.length - 1;
+        const characters = this.paper.split('');
+
+        for (let i = 0; i < text.length; i++) {
+            characters[textEndIndex - i] = SPACE;
+        }
+
+        this.paper = characters.join('');
 
         return this;
     }

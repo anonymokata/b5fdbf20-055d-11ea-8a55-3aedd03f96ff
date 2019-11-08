@@ -343,4 +343,109 @@ describe('Pencil', () => {
             expect(length).to.equal(0);
         });
     });
+
+    context('when erase() called', () => {
+        it('should erase given word', () => {
+            // given
+            const prefix = chance.word();
+            const wordToErase = chance.word();
+            const suffix = chance.word();
+            const wordsToWrite = `${prefix}${wordToErase}${suffix}`;
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(undefined, undefined, undefined);
+            const { paper } = pencil.write(wordsToWrite).erase(wordToErase);
+
+            // then
+            expect(paper).to.equal(`${prefix}${chance.n(() => ' ', wordToErase.length).join('')}${suffix}`);
+        });
+
+        it('should erase last instance of given word', () => {
+            // given
+            const prefix = chance.word();
+            const wordToErase = chance.word();
+            const suffix = chance.word();
+            const wordsToWrite = `${prefix}${wordToErase}${wordToErase}${suffix}`;
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(undefined, undefined, undefined);
+            const { paper } = pencil.write(wordsToWrite).erase(wordToErase);
+
+            // then
+            expect(paper).to.equal(`${prefix}${wordToErase}${chance.n(() => ' ', wordToErase.length).join('')}${suffix}`);
+        });
+
+        it('should erase word on given paper', () => {
+            // given
+            const prefix = chance.word();
+            const wordToErase = chance.word();
+            const suffix = chance.word();
+            const givenPaper = `${prefix}${wordToErase}${suffix}`;
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(givenPaper, undefined, undefined);
+            const { paper } = pencil.erase(wordToErase);
+
+            // then
+            expect(paper).to.equal(`${prefix}${chance.n(() => ' ', wordToErase.length).join('')}${suffix}`);
+        });
+
+        it('should not erase if word doesn\'t exist', () => {
+            // given
+            const prefix = chance.word();
+            const word = chance.word();
+            const suffix = chance.word();
+            const wordsToWrite = `${prefix}${word}${suffix}`;
+            const wordToErase = '!!!';
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(undefined, undefined, undefined);
+            const { paper } = pencil.write(wordsToWrite).erase(wordToErase);
+
+            // then
+            expect(paper).to.equal(wordsToWrite);
+        });
+
+        it('should erase n instances of word if called n times', () => {
+            // given
+            const prefix = chance.word();
+            const wordToErase = chance.word();
+            const suffix = chance.word();
+            const wordsToWrite = `${prefix}${wordToErase}${wordToErase}${wordToErase}${suffix}`;
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(undefined, undefined, undefined);
+            const { paper } = pencil.write(wordsToWrite).erase(wordToErase).erase(wordToErase);
+
+            // then
+            expect(paper).to.equal(`${prefix}${wordToErase}${chance.n(() => ' ', wordToErase.length).join('')}${chance.n(() => ' ', wordToErase.length).join('')}${suffix}`);
+        });
+
+        it('should stop erasing when no more instances exist', () => {
+            // given
+            const prefix = chance.word();
+            const wordToErase = chance.word();
+            const suffix = chance.word();
+            const wordsToWrite = `${prefix}${wordToErase}${wordToErase}${suffix}`;
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(undefined, undefined, undefined);
+            const { paper } = pencil.write(wordsToWrite).erase(wordToErase).erase(wordToErase).erase(wordToErase);
+
+            // then
+            expect(paper).to.equal(`${prefix}${chance.n(() => ' ', wordToErase.length).join('')}${chance.n(() => ' ', wordToErase.length).join('')}${suffix}`);
+        });
+    });
 });
