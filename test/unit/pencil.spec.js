@@ -154,6 +154,36 @@ describe('Pencil', () => {
             expect(pointDegradation).to.equal(givenPointDegradation - wordToWrite.length);
         });
 
+        it('should only degrade for written words and not any given text', () => {
+            // given
+            const givenPaper = chance.string();
+            const givenPointDegradation = 100;
+            const wordToWrite = chance.word();
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(givenPaper, givenPointDegradation);
+            const { paper, pointDegradation } = pencil.write(wordToWrite);
+
+            // then
+            expect(paper).to.equal(`${givenPaper}${wordToWrite}`);
+            expect(pointDegradation).to.equal(givenPointDegradation - wordToWrite.length);
+        });
+
+        it('should not degrade when not writing', () => {
+            // given
+            const givenPointDegradation = 100;
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const { pointDegradation } = new Pencil('', givenPointDegradation);
+
+            // then
+            expect(pointDegradation).to.equal(givenPointDegradation);
+        });
+
         it('should not degrade when writing whitespace', () => {
             // given
             const givenPointDegradation = chance.natural();
@@ -201,6 +231,35 @@ describe('Pencil', () => {
             // then
             expect(pointDegradation).to.equal(0);
             expect(paper).to.equal('t   ');
+        });
+
+        it('should degrade twice as fast when writing capital characters', () => {
+            // given
+            const givenPointDegradation = 100;
+            const wordToWrite = chance.string({ alpha: true, casing: 'upper' });
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil('', givenPointDegradation);
+            const { paper, pointDegradation } = pencil.write(wordToWrite);
+
+            // then
+            expect(pointDegradation).to.equal(givenPointDegradation - (wordToWrite.length * 2));
+            expect(paper).to.equal(wordToWrite);
+        });
+
+        it('should write lowercase character if too dull to complete uppercase character', () => {
+            // given
+            const givenPointDegradation = 3;
+            const wordToWrite = 'caT';
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil('', givenPointDegradation);
+            const { paper } = pencil.write(wordToWrite);
+
+            // then
+            expect(paper).to.equal('cat');
         });
     });
 });
