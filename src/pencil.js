@@ -13,7 +13,7 @@ class Pencil {
     }
 
     _canWriteCapital() {
-        return this.pointDurability >= 2;
+        return this.pointDurability >= CAPITAL_CHARACTER_COST;
     }
 
     _isCapital(character) {
