@@ -40,7 +40,7 @@ class Pencil {
         }
     }
 
-    _writeCharacter(character) {
+    _writeCharacterToPaper(character) {
         const characterToWrite = this._canWrite() ? character : SPACE;
         const casedCharacterToWrite = this._canWriteCapital() ? characterToWrite : characterToWrite.toLowerCase();
 
@@ -50,7 +50,7 @@ class Pencil {
 
     write(text) {
         for (const character of text) {
-            this._writeCharacter(character);
+            this._writeCharacterToPaper(character);
         }
 
         return this;
@@ -65,12 +65,12 @@ class Pencil {
         return this;
     }
 
-    _hasText(text) {
+    _paperHasText(text) {
         return this.paper.includes(text);
     }
 
     erase(text) {
-        if (!this._hasText(text)) {
+        if (!this._paperHasText(text)) {
             return this;
         }
 
