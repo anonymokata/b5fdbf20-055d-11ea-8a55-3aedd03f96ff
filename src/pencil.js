@@ -2,17 +2,17 @@ const CHARATER_COST = 1;
 const CAPITAL_CHARACTER_COST = CHARATER_COST * 2;
 
 class Pencil {
-    constructor(paper = '', pointDegradation = Infinity) {
+    constructor(paper = '', pointDurability = Infinity) {
         this.paper = paper;
-        this.pointDegradation = pointDegradation;
+        this.pointDurability = pointDurability;
     }
 
     _canWrite() {
-        return this.pointDegradation > 0;
+        return this.pointDurability > 0;
     }
 
     _canWriteCapital() {
-        return this.pointDegradation >= 2;
+        return this.pointDurability >= 2;
     }
 
     _isCapital(character) {
@@ -21,11 +21,11 @@ class Pencil {
 
     _degradePoint(character) {
         if (/[\s]/.test(character)) {
-            this.pointDegradation -= 0;
+            this.pointDurability -= 0;
         } else if (this._isCapital(character)) {
-            this.pointDegradation -= CAPITAL_CHARACTER_COST;
+            this.pointDurability -= CAPITAL_CHARACTER_COST;
         } else {
-            this.pointDegradation -= CHARATER_COST;
+            this.pointDurability -= CHARATER_COST;
         }
     }
 
