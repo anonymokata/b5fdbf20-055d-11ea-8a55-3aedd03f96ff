@@ -19,7 +19,8 @@ describe('Pencil', () => {
             expect(pencil instanceof Pencil).to.equal(true);
             expect(pencil).to.deep.equal({
                 paper: '',
-                pointDurability: Infinity
+                pointDurability: Infinity,
+                maxPointDurability: Infinity
             });
         });
 
@@ -260,6 +261,22 @@ describe('Pencil', () => {
 
             // then
             expect(paper).to.equal('cat');
+        });
+    });
+
+    context('when sharpen() called', () => {
+        it('should reset durability to initial', () => {
+            // given
+            const givenPointDurability = chance.natural();
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil('', givenPointDurability);
+            const { pointDurability } = pencil.write(chance.word()).sharpen();
+
+            // then
+            expect(pointDurability).to.equal(givenPointDurability);
         });
     });
 });

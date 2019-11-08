@@ -5,6 +5,7 @@ class Pencil {
     constructor(paper = '', pointDurability = Infinity) {
         this.paper = paper;
         this.pointDurability = pointDurability;
+        this.maxPointDurability = pointDurability;
     }
 
     _canWrite() {
@@ -41,6 +42,12 @@ class Pencil {
         for (const character of text) {
             this._writeCharacter(character);
         }
+
+        return this;
+    }
+
+    sharpen() {
+        this.pointDurability = this.maxPointDurability;
 
         return this;
     }
