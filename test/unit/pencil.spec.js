@@ -20,7 +20,8 @@ describe('Pencil', () => {
             expect(pencil).to.deep.equal({
                 paper: '',
                 pointDurability: Infinity,
-                maxPointDurability: Infinity
+                maxPointDurability: Infinity,
+                length: Infinity
             });
         });
 
@@ -277,6 +278,20 @@ describe('Pencil', () => {
 
             // then
             expect(pointDurability).to.equal(givenPointDurability);
+        });
+
+        it('should reduce length for every sharpen', () => {
+            // given
+            const givenLength = chance.natural({ min: 10 });
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(undefined, undefined, givenLength);
+            const { length } = pencil.sharpen().sharpen().sharpen();
+
+            // then
+            expect(length).to.equal(givenLength - 3);
         });
     });
 });
