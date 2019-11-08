@@ -26,8 +26,12 @@ class Pencil {
         return character !== character.toLowerCase();
     }
 
+    _isWhitespace(character) {
+        return /[\s]/.test(character);
+    }
+
     _degradePoint(character) {
-        if (/[\s]/.test(character)) {
+        if (this._isWhitespace(character)) {
             this.pointDurability -= 0;
         } else if (this._isCapital(character)) {
             this.pointDurability -= CAPITAL_CHARACTER_COST;
