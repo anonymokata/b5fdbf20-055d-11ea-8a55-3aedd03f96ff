@@ -1,4 +1,5 @@
 const SPACE = ' ';
+const COLLISION_CHARACTER = '@';
 
 const CHARATER_COST = 1;
 const CAPITAL_CHARACTER_COST = CHARATER_COST * 2;
@@ -14,6 +15,7 @@ class Pencil {
         this.maxPointDurability = pointDurability;
         this.length = length;
         this.eraserDurability = eraserDurability;
+        this.editPosition = null;
     }
 
     _canWrite() {
@@ -54,6 +56,8 @@ class Pencil {
         for (const character of text) {
             this._writeCharacterToPaper(character);
         }
+
+        this.editPosition = null;
 
         return this;
     }
@@ -96,10 +100,43 @@ class Pencil {
                 const characterToErase = characters[textEndIndex - i];
                 characters[textEndIndex - i] = SPACE;
                 this._degradeEraser(characterToErase);
+                this.editPosition = textEndIndex - i;
             }
         }
 
         this.paper = characters.join('');
+
+        return this;
+    }
+
+    _canEdit() {
+        return this.editPosition !== null;
+    }
+
+    edit(text) {
+        if (!this._canEdit()) {
+            return this;
+        }
+
+        const editIndex = this.editPosition;
+        const characters = this.paper.split('');
+
+        for (let i = 0; i < text.length; i++) {
+            const textCharacter = text[i];
+            const textCharacterToWrite = this._canWrite() ? textCharacter : SPACE;
+            const casedTextCharacterToWrite = this._canWriteCapital() ? textCharacterToWrite : textCharacterToWrite.toLowerCase();
+
+            if (this._isWhitespace(characters[editIndex + i])) {
+                characters[editIndex + i] = casedTextCharacterToWrite;
+                this._degradePoint(casedTextCharacterToWrite);
+            } else {
+                characters[editIndex + i] = COLLISION_CHARACTER;
+            }
+        }
+
+        this.paper = characters.join('');
+
+        this.editPosition = null;
 
         return this;
     }

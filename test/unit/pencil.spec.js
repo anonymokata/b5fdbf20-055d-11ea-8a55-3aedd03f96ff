@@ -22,7 +22,8 @@ describe('Pencil', () => {
                 pointDurability: Infinity,
                 maxPointDurability: Infinity,
                 length: Infinity,
-                eraserDurability: Infinity
+                eraserDurability: Infinity,
+                editPosition: null
             });
         });
 
@@ -645,6 +646,140 @@ describe('Pencil', () => {
             // then
             expect(paper).to.equal(wordToErase);
             expect(eraserDurability).to.equal(0);
+        });
+    });
+
+    context('when edit() called', () => {
+        it('should edit given word', () => {
+            // given
+            const wordLength = 5;
+            const prefix = chance.word();
+            const wordToEdit = chance.word({ length: wordLength });
+            const suffix = chance.word();
+            const newWordToWrite = chance.word({ length: wordLength });
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil();
+            const { paper } = pencil.write(`${prefix}${wordToEdit}${suffix}`).erase(wordToEdit).edit(newWordToWrite);
+
+            // then
+            expect(paper).to.equal(`${prefix}${newWordToWrite}${suffix}`);
+        });
+
+        it('should not edit if no erasure has happened', () => {
+            // given
+            const givenPaper = chance.paragraph();
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(givenPaper);
+            const { paper } = pencil.edit(chance.word());
+
+            // then
+            expect(paper).to.equal(givenPaper);
+        });
+
+        it('should show collisions when writing over existing text', () => {
+            // given
+            const givenPaper = 'An apple a day keeps the doctor away';
+            const wordToEdit = 'artichoke';
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil(givenPaper);
+            const { paper } = pencil.erase('apple').edit(wordToEdit);
+
+            // then
+            expect(paper).to.equal('An artich@k@ay keeps the doctor away');
+        });
+
+        it('should collide when editing in a larger word', () => {
+            // given
+            const prefix = 'prefix';
+            const wordToEdit = 'car';
+            const suffix = 'suffix';
+            const newWordToWrite = 'cars';
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil();
+            const { paper } = pencil.write(`${prefix}${wordToEdit}${suffix}`).erase(wordToEdit).edit(newWordToWrite);
+
+            // then
+            expect(paper).to.equal(`${prefix}car@uffix`);
+        });
+
+        it('should not collide when editing in a smaller word', () => {
+            // given
+            const prefix = 'prefix';
+            const wordToEdit = 'trucks';
+            const suffix = 'suffix';
+            const newWordToWrite = 'truck';
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil();
+            const { paper } = pencil.write(`${prefix}${wordToEdit}${suffix}`).erase(wordToEdit).edit(newWordToWrite);
+
+            // then
+            expect(paper).to.equal(`${prefix}truck ${suffix}`);
+        });
+
+        it('should not collide when editing in a word that is just right', () => {
+            // given
+            const prefix = 'prefix';
+            const wordToEdit = 'trucks';
+            const suffix = 'suffix';
+            const newWordToWrite = 'planes';
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil();
+            const { paper } = pencil.write(`${prefix}${wordToEdit}${suffix}`).erase(wordToEdit).edit(newWordToWrite);
+
+            // then
+            expect(paper).to.equal(`${prefix}${newWordToWrite}${suffix}`);
+        });
+
+        it('should not edit twice', () => {
+            // given
+            const prefix = 'prefix';
+            const wordToEdit = chance.word({ length: 5 });
+            const suffix = 'suffix';
+            const firstWordToEdit = chance.word({ length: 5 });
+            const secondWordToEdit = chance.word();
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil();
+            const { paper } = pencil.write(`${prefix}${wordToEdit}${suffix}`).erase(wordToEdit).edit(firstWordToEdit).edit(secondWordToEdit);
+
+            // then
+            expect(paper).to.equal(`${prefix}${firstWordToEdit}${suffix}`);
+        });
+
+        it('should not edit after writing', () => {
+            // given
+            const wordToEdit = chance.word({ length: 5 });
+            const wordToWrite = chance.word();
+            const newWordToWrite = chance.word();
+
+            const { Pencil } = proxyquire(MODULE_PATH, {});
+
+            // when
+            const pencil = new Pencil();
+            const { paper } = pencil.write(wordToEdit).erase(wordToEdit).write(wordToWrite).edit(newWordToWrite);
+
+            // then
+            expect(paper).to.equal(`     ${wordToWrite}`);
         });
     });
 });
