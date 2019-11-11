@@ -447,7 +447,7 @@ describe('Pencil', () => {
         it('should erase given word', () => {
             // given
             const prefix = chance.word();
-            const wordToErase = chance.word();
+            const wordToErase = chance.word({ length: 5 });
             const suffix = chance.word();
             const wordsToWrite = `${prefix}${wordToErase}${suffix}`;
 
@@ -464,7 +464,7 @@ describe('Pencil', () => {
         it('should erase last instance of given word', () => {
             // given
             const prefix = chance.word();
-            const wordToErase = chance.word();
+            const wordToErase = chance.word({ length: 5 });
             const suffix = chance.word();
             const wordsToWrite = `${prefix}${wordToErase}${wordToErase}${suffix}`;
 
@@ -481,7 +481,7 @@ describe('Pencil', () => {
         it('should erase word on given paper', () => {
             // given
             const prefix = chance.word();
-            const wordToErase = chance.word();
+            const wordToErase = chance.word({ length: 5 });
             const suffix = chance.word();
             const givenPaper = `${prefix}${wordToErase}${suffix}`;
 
@@ -551,7 +551,7 @@ describe('Pencil', () => {
         it('should stop erasing when no more instances exist', () => {
             // given
             const prefix = chance.word();
-            const wordToErase = chance.word();
+            const wordToErase = chance.word({ length: 5 });
             const suffix = chance.word();
             const wordsToWrite = `${prefix}${wordToErase}${wordToErase}${suffix}`;
 
@@ -569,7 +569,7 @@ describe('Pencil', () => {
             // given
             const givenEraserDurability = chance.natural({ min: 20 });
             const prefix = chance.word();
-            const wordToErase = chance.word();
+            const wordToErase = chance.word({ length: 5 });
             const suffix = chance.word();
             const wordsToWrite = `${prefix}${wordToErase}${suffix}`;
 
