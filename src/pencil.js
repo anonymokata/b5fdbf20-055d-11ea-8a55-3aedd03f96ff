@@ -44,12 +44,18 @@ class Pencil {
         }
     }
 
-    _writeCharacterToPaper(character) {
+    _determineCharacterToWrite(character) {
         const characterToWrite = this._canWrite() ? character : SPACE;
         const casedCharacterToWrite = this._canWriteCapital() ? characterToWrite : characterToWrite.toLowerCase();
 
-        this.paper += casedCharacterToWrite;
-        this._degradePoint(casedCharacterToWrite);
+        return casedCharacterToWrite;
+    }
+
+    _writeCharacterToPaper(character) {
+        const characterToWrite = this._determineCharacterToWrite(character);
+
+        this.paper += characterToWrite;
+        this._degradePoint(characterToWrite);
     }
 
     write(text) {
@@ -123,12 +129,11 @@ class Pencil {
 
         for (let i = 0; i < text.length; i++) {
             const textCharacter = text[i];
-            const textCharacterToWrite = this._canWrite() ? textCharacter : SPACE;
-            const casedTextCharacterToWrite = this._canWriteCapital() ? textCharacterToWrite : textCharacterToWrite.toLowerCase();
+            const characterToWrite = this._determineCharacterToWrite(textCharacter);
 
             if (this._isWhitespace(characters[editIndex + i])) {
-                characters[editIndex + i] = casedTextCharacterToWrite;
-                this._degradePoint(casedTextCharacterToWrite);
+                characters[editIndex + i] = characterToWrite;
+                this._degradePoint(characterToWrite);
             } else {
                 characters[editIndex + i] = COLLISION_CHARACTER;
             }
