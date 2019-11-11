@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "coverage": "nyc --reporter=lcov --reporter=text npm run test",
+    "coverage": "nyc --reporter=lcov --reporter=text --reporter=html npm run test",
     "start": "node index.js",
     "test": "mocha 'test/**/*.spec.js' --reporter progress"
   },
